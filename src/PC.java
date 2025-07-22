@@ -30,15 +30,15 @@ public class PC {
         }
         public int[] getAbilityScores() {
             int[] tmpAbilityScores = abilityScores;
-            for (AbilityScoreIncrease ASI : PC.this.appliedAbilityScoreIncreases) {
-                tmpAbilityScores = ASI.getScores(tmpAbilityScores);
+            for (AbilityScoreIncrease asi : PC.this.appliedAbilityScoreIncreases) {
+                tmpAbilityScores = asi.adjustScores(tmpAbilityScores);
             }
             return tmpAbilityScores;
         }
         public int getAbilityScore(PC.AbilityScores.AbilityScoreEnum ability) {
             int[] tmpAbilityScores = abilityScores;
-            for (AbilityScoreIncrease ASI : PC.this.appliedAbilityScoreIncreases) {
-                tmpAbilityScores = ASI.getScores(tmpAbilityScores);
+            for (AbilityScoreIncrease asi : PC.this.appliedAbilityScoreIncreases) {
+                tmpAbilityScores = asi.adjustScores(tmpAbilityScores);
             }
             return tmpAbilityScores[PC.AbilityScores.AbilityScoreEnum.getValue(ability)];
         }
