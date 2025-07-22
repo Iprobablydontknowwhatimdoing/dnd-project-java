@@ -21,6 +21,28 @@ public class PC {
     public int getProficiencyBonus() {
         return (int) Math.ceil((double) getTotalLevel() / 2);
     }
+
+    public enum AbilityScoreEnum {
+        STRENGTH,
+        DEXTERITY,
+        CONSTITUTION,
+        INTELLIGENCE,
+        WISDOM,
+        CHARISMA;
+
+        public static int getValue(PC.AbilityScoreEnum abilityScore) {
+            return switch (abilityScore) {
+                case STRENGTH -> 0;
+                case DEXTERITY -> 1;
+                case CONSTITUTION -> 2;
+                case INTELLIGENCE -> 3;
+                case WISDOM -> 4;
+                case CHARISMA -> 5;
+                default -> throw new IllegalStateException("Unexpected value: " + abilityScore);
+            };
+        }
+    }
+
     public class AbilityScores {
 
         public int[] abilityScores;
@@ -30,37 +52,17 @@ public class PC {
         }
         public int[] getAbilityScores() {
             int[] tmpAbilityScores = abilityScores;
-            for (AbilityScoreIncrease ASI : PC.this.appliedAbilityScoreIncreases) {
-                tmpAbilityScores = ASI.getScores(tmpAbilityScores);
+            for (AbilityScoreIncrease asi : PC.this.appliedAbilityScoreIncreases) {
+                tmpAbilityScores = asi.adjustScores(tmpAbilityScores);
             }
             return tmpAbilityScores;
         }
-        public int getAbilityScore(PC.AbilityScores.AbilityScoreEnum ability) {
+        public int getAbilityScore(PC.AbilityScoreEnum ability) {
             int[] tmpAbilityScores = abilityScores;
-            for (AbilityScoreIncrease ASI : PC.this.appliedAbilityScoreIncreases) {
-                tmpAbilityScores = ASI.getScores(tmpAbilityScores);
+            for (AbilityScoreIncrease asi : PC.this.appliedAbilityScoreIncreases) {
+                tmpAbilityScores = asi.adjustScores(tmpAbilityScores);
             }
-            return tmpAbilityScores[PC.AbilityScores.AbilityScoreEnum.getValue(ability)];
-        }
-        public enum AbilityScoreEnum {
-            STRENGTH,
-            DEXTERITY,
-            CONSTITUTION,
-            INTELLIGENCE,
-            WISDOM,
-            CHARISMA;
-
-            public static int getValue(PC.AbilityScores.AbilityScoreEnum abilityScore) {
-                return switch (abilityScore) {
-                    case STRENGTH -> 0;
-                    case DEXTERITY -> 1;
-                    case CONSTITUTION -> 2;
-                    case INTELLIGENCE -> 3;
-                    case WISDOM -> 4;
-                    case CHARISMA -> 5;
-                    default -> throw new IllegalStateException("Unexpected value: " + abilityScore);
-                };
-            }
+            return tmpAbilityScores[PC.AbilityScoreEnum.getValue(ability)];
         }
     }
     public class skillProficiencies {
@@ -72,14 +74,14 @@ public class PC {
         }
         public void addProficiency(Skills skill) {
             if (this.proficiencies[Skills.getArrayValue(skill)] >= 1) {
-                throw IllegalArgumentException;
+                throw new IllegalArgumentException();
             } else {
                 this.proficiencies[Skills.getArrayValue(skill)] = 1;
             }
         }
         public void addExpertise(Skills skill) {
             if (this.proficiencies[Skills.getArrayValue(skill)] >= 2) {
-                throw IllegalStateException;
+                throw new IllegalStateException();
             } else {
                 this.proficiencies[Skills.getArrayValue(skill)] = 2;
             }
@@ -99,7 +101,7 @@ public class PC {
             }
         }
         public int getSkillBonus(Skills skill) {
-            double abilityScore = (double) PC.this.AbilityScores.getAbilityScore(Skills.getAbility(skill));
+            double abilityScore = (double) PC.this.abilityScores.getAbilityScore(Skills.getAbility(skill));
             double proficiencyScore = (double) this.proficiencies[Skills.getArrayValue(skill)]*PC.this.getProficiencyBonus();
             return (int) Math.round(abilityScore + proficiencyScore); //TODO: figure out if its rounded up or down
         }
@@ -123,16 +125,15 @@ public class PC {
         SLIGHT_OF_HAND,
         STEALTH,
         SURVIVAL;
-        public static PC.AbilityScores.AbilityScoreEnum getAbility(Skills skill) {
-            //TODO: help
+        public static PC.AbilityScoreEnum getAbility(Skills skill) {
             return switch (skill) {
-                case ATHLETICS -> PC.AbilityScores.AbilityScoreEnum.STRENGTH;
-                case ACROBATICS, SLIGHT_OF_HAND, STEALTH -> PC.AbilityScores.AbilityScoreEnum.DEXTERITY;
-                case ARCANA, HISTORY, INVESTIGATION, NATURE, RELIGION -> PC.AbilityScores.AbilityScoreEnum.INTELLIGENCE;
-                case ANIMAL_HANDLING, INSIGHT, MEDICINE, PERCEPTION, SURVIVAL -> PC.AbilityScores.AbilityScoreEnum.WISDOM;
-                case DECEPTION, INTIMIDATION, PERFORMANCE, PERSUASION -> PC.AbilityScores.AbilityScoreEnum.CHARISMA;
+                case ATHLETICS -> PC.AbilityScoreEnum.STRENGTH;
+                case ACROBATICS, SLIGHT_OF_HAND, STEALTH -> PC.AbilityScoreEnum.DEXTERITY;
+                case ARCANA, HISTORY, INVESTIGATION, NATURE, RELIGION -> PC.AbilityScoreEnum.INTELLIGENCE;
+                case ANIMAL_HANDLING, INSIGHT, MEDICINE, PERCEPTION, SURVIVAL -> PC.AbilityScoreEnum.WISDOM;
+                case DECEPTION, INTIMIDATION, PERFORMANCE, PERSUASION -> PC.AbilityScoreEnum.CHARISMA;
                 case null, default -> {
-                    throw IllegalArgumentException; //TODO: help
+                    throw new IllegalArgumentException();
                 }
             };
         }
@@ -157,7 +158,7 @@ public class PC {
                 case STEALTH -> 16;
                 case SURVIVAL -> 17;
                 case null, default -> {
-                    throw IllegalArgumentException;
+                    throw new IllegalArgumentException();
                 }
             };
         }
