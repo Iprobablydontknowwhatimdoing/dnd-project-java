@@ -1,18 +1,28 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class PC {
+
+    public List<Class> classOptions = new ArrayList<>();
+    public List<Race> raceOptions = new ArrayList<>();
 
     public List<AbilityScoreIncrease> appliedAbilityScoreIncreases = new ArrayList<>();
     public List<AbilityBonusIncrease> appliedAbilityBonusIncreases = new ArrayList<>();
     public List<Class> appliedClasses = new ArrayList<>();
+    public Race appliedRace;
 
-    protected AbilityScores abilityScores;
-    protected SkillProficiencies skillProficiencies;
+    public AbilityScores abilityScores;
+    public SkillProficiencies skillProficiencies;
 
     public PC() {
         this.abilityScores = new AbilityScores(this);
         this.skillProficiencies = new SkillProficiencies(this);
+    }
+
+    public void askRaceOption() {
+        System.out.println("Please choose a race:");
+
     }
 
     public int getTotalLevel() {
@@ -99,6 +109,23 @@ public class PC {
             }
             return tmpAbilityScores;
         }
+        public void askAbilityScoreIncrease(String abilityScoreIncreaseText, ) {
+            System.out.println("Please choose an ability score increase:");
+            System.out.println(abilityScoreIncreaseText);
+            Scanner answerScanner = new Scanner(System.in);
+            System.out.println("Choice (character): ");
+            char choice = answerScanner.nextLine().charAt(0);
+            switch (choice) {
+                case 'a' -> {
+                    System.out.println("Please choose your +2 ability score bonus");
+                } case 'b' -> {
+                    System.out.println("Please choose your +1 ability score bonus");
+                } default -> {
+                    System.out.println("Sorry, this is an invalid answer. Please try again. \n\n\n");
+                    askAbilityScoreIncrease();
+                }
+            }
+        }
 
         public int getAbilityScore(AbilityScoreEnum ability) {
             int abilityScore = abilityScores[ability.index];
@@ -150,7 +177,7 @@ public class PC {
         }
 
         public void addExpertise(Skills skill) {
-            if (this.proficiencies[skill.value] >= 2) {
+            if (this.proficiencies[skill.value] >= 2 || this.proficiencies[skill.value] < 1) {
                 throw new IllegalStateException();
             } else {
                 this.proficiencies[skill.value] = 2;
@@ -177,6 +204,14 @@ public class PC {
             double abilityScore = pcInstance.abilityScores.getAbilityScore(skill.ability);
             double proficiencyScore = this.proficiencies[skill.value] * pcInstance.getProficiencyBonus();
             return (int) Math.round(abilityScore + proficiencyScore); //TODO: figure out if its rounded up or down
+        }
+
+        public int[] getSkillBonuses() {
+            int[] skills = new int[Skills.values().length];
+            for (Skills skill: Skills.values()) {
+                skills[skill.value] = this.getSkillBonus(skill);
+            }
+            return skills;
         }
     }
 
