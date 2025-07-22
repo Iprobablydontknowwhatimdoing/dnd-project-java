@@ -3,15 +3,15 @@ public class AbilityScoreIncrease {
     private final PC pc;
     public AbilityScoreIncrease(int[] scores, PC pc) {
         //  TODO: fix this, intellisence doesn't like it.
-        //  try { assert Attributes.AbilityScores.values().length == scores.length;} catch (AssertionError e) {System.out.println( 'Whoops! you encountered error ' + e + '\n\n Please fix this!');}
+        assert PC.AbilityScoreEnum.values().length == scores.length;
         this.scores = scores;
         this.pc = pc;
         pc.appliedAbilityScoreIncreases.add(this);
     }
-    public final int[] getScores() {
+    public final int[] adjustScores() {
         return this.scores;
     }
-    public int[] getScores(int[] existingScores) {
+    public int[] adjustScores(int[] existingScores) {
         try {
             assert existingScores.length == this.scores.length;
         } catch (AssertionError e) {
