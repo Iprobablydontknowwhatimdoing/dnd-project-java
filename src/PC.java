@@ -40,7 +40,6 @@ public class PC {
                 case INTELLIGENCE -> 3;
                 case WISDOM -> 4;
                 case CHARISMA -> 5;
-                default -> throw new IllegalStateException("Unexpected value: " + abilityScore);
             };
         }
     }
@@ -126,12 +125,12 @@ public class PC {
             }
         }
         public int getSkillBonus(Skills skill) {
-            double abilityScore = (double) PC.this.abilityScores.getAbilityScore(Skills.getAbility(skill));
-            double proficiencyScore = (double) this.proficiencies[Skills.getArrayValue(skill)]*PC.this.getProficiencyBonus();
+            double abilityScore = PC.this.abilityScores.getAbilityScore(Skills.getAbility(skill));
+            double proficiencyScore = this.proficiencies[Skills.getArrayValue(skill)]*PC.this.getProficiencyBonus();
             return (int) Math.round(abilityScore + proficiencyScore); //TODO: figure out if its rounded up or down
         }
     }
-    public static enum Skills {
+    public enum Skills {
         ACROBATICS,
         ANIMAL_HANDLING,
         ARCANA,
@@ -157,9 +156,6 @@ public class PC {
                 case ARCANA, HISTORY, INVESTIGATION, NATURE, RELIGION -> PC.AbilityScoreEnum.INTELLIGENCE;
                 case ANIMAL_HANDLING, INSIGHT, MEDICINE, PERCEPTION, SURVIVAL -> PC.AbilityScoreEnum.WISDOM;
                 case DECEPTION, INTIMIDATION, PERFORMANCE, PERSUASION -> PC.AbilityScoreEnum.CHARISMA;
-                case null, default -> {
-                    throw new IllegalArgumentException();
-                }
             };
         }
         public static int getArrayValue(Skills skill) {
@@ -182,9 +178,6 @@ public class PC {
                 case SLIGHT_OF_HAND -> 15;
                 case STEALTH -> 16;
                 case SURVIVAL -> 17;
-                case null, default -> {
-                    throw new IllegalArgumentException();
-                }
             };
         }
     }
