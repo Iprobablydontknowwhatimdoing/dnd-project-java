@@ -6,6 +6,6 @@ public class Class {
     }
 
     public Class() {
-        this.level = 1; // Assumes that level starts at zero
+        this.level = 1; // Assumes that level starts at one
     }
 }

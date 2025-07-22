@@ -1,4 +1,5 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PC {
 
@@ -13,6 +14,7 @@ public class PC {
         this.abilityScores = new AbilityScores(this);
         this.skillProficiencies = new SkillProficiencies(this);
     }
+
     public int getTotalLevel() {
         int level = 0;
         for (Class appliedClass : this.appliedClasses) {
@@ -20,17 +22,13 @@ public class PC {
         }
         return level;
     }
+
     public int getProficiencyBonus() {
         return (int) Math.ceil((double) getTotalLevel() / 2);
     }
 
     public enum AbilityScoreEnum {
-        STRENGTH,
-        DEXTERITY,
-        CONSTITUTION,
-        INTELLIGENCE,
-        WISDOM,
-        CHARISMA;
+        STRENGTH, DEXTERITY, CONSTITUTION, INTELLIGENCE, WISDOM, CHARISMA;
 
         public static int getValue(PC.AbilityScoreEnum abilityScore) {
             return switch (abilityScore) {
@@ -44,111 +42,9 @@ public class PC {
         }
     }
 
-    public static class AbilityScores {
-
-        public int[] abilityScores;
-        public final PC pcInstance;
-
-        public AbilityScores(PC pc) {
-            this.abilityScores = new int[6];
-            this.pcInstance = pc;
-        }
-        public int[] getAbilityScores() {
-            int[] tmpAbilityScores = abilityScores;
-            for (AbilityScoreIncrease asi : pcInstance.appliedAbilityScoreIncreases) {
-                tmpAbilityScores = asi.adjustScores(tmpAbilityScores);
-            }
-            return tmpAbilityScores;
-        }
-        public int getAbilityScore(PC.AbilityScoreEnum ability) {
-            int abilityScore = abilityScores[PC.AbilityScoreEnum.getValue(ability)];
-            for (AbilityScoreIncrease asi : pcInstance.appliedAbilityScoreIncreases) {
-                abilityScore = asi.adjustScore(ability, abilityScore);
-            }
-            return abilityScore;
-        }
-        public int[] getAbilityBonuses() {
-            int[] abilityBonuses = new int[6];
-            int[] abilityScores = getAbilityScores();
-            for (int i = 0; i < abilityScores.length; i++) {
-                abilityBonuses[i] = (int) Math.floor(((double) abilityScores[i] - 10) / 2);
-            }
-            for (AbilityBonusIncrease abi: pcInstance.appliedAbilityBonusIncreases) {
-                abilityBonuses = abi.adjustBonuses(abilityBonuses);
-            }
-            return abilityBonuses;
-        }
-        public int getAbilityBonus(PC.AbilityScoreEnum ability) {
-            int abilityBonus = getAbilityScore(ability);
-            for (AbilityBonusIncrease bonus : pcInstance.appliedAbilityBonusIncreases) {
-                abilityBonus = bonus.adjustBonus(ability, abilityBonus);
-            }
-            return abilityBonus;
-        }
-    }
-    public class SkillProficiencies {
-        public double[] proficiencies = new double[18];
-        private final PC pcInstance;
-
-        public SkillProficiencies(PC pc) {
-            this.pcInstance = pc;
-        }
-        public void setProficiencies(double[] proficiencies) {
-            this.proficiencies = proficiencies;
-        }
-        public void addProficiency(Skills skill) {
-            if (this.proficiencies[Skills.getArrayValue(skill)] >= 1) {
-                throw new IllegalArgumentException();
-            } else {
-                this.proficiencies[Skills.getArrayValue(skill)] = 1;
-            }
-        }
-        public void addExpertise(Skills skill) {
-            if (this.proficiencies[Skills.getArrayValue(skill)] >= 2) {
-                throw new IllegalStateException();
-            } else {
-                this.proficiencies[Skills.getArrayValue(skill)] = 2;
-            }
-        }
-        public void addJackOfAllTrades() {
-            for (double i : this.proficiencies) {
-                if (i == 0) {
-                    i = 0.5;
-                }
-            }
-        }
-        public void removeJackOfAllTrades() {
-            for (double i : this.proficiencies) {
-                if (i == 0.5) {
-                    i = 0;
-                }
-            }
-        }
-        public int getSkillBonus(Skills skill) {
-            double abilityScore = PC.this.abilityScores.getAbilityScore(Skills.getAbility(skill));
-            double proficiencyScore = this.proficiencies[Skills.getArrayValue(skill)]*PC.this.getProficiencyBonus();
-            return (int) Math.round(abilityScore + proficiencyScore); //TODO: figure out if its rounded up or down
-        }
-    }
     public enum Skills {
-        ACROBATICS,
-        ANIMAL_HANDLING,
-        ARCANA,
-        ATHLETICS,
-        DECEPTION,
-        HISTORY,
-        INSIGHT,
-        INTIMIDATION,
-        INVESTIGATION,
-        MEDICINE,
-        NATURE,
-        PERCEPTION,
-        PERFORMANCE,
-        PERSUASION,
-        RELIGION,
-        SLIGHT_OF_HAND,
-        STEALTH,
-        SURVIVAL;
+        ACROBATICS, ANIMAL_HANDLING, ARCANA, ATHLETICS, DECEPTION, HISTORY, INSIGHT, INTIMIDATION, INVESTIGATION, MEDICINE, NATURE, PERCEPTION, PERFORMANCE, PERSUASION, RELIGION, SLIGHT_OF_HAND, STEALTH, SURVIVAL;
+
         public static PC.AbilityScoreEnum getAbility(Skills skill) {
             return switch (skill) {
                 case ATHLETICS -> PC.AbilityScoreEnum.STRENGTH;
@@ -158,6 +54,7 @@ public class PC {
                 case DECEPTION, INTIMIDATION, PERFORMANCE, PERSUASION -> PC.AbilityScoreEnum.CHARISMA;
             };
         }
+
         public static int getArrayValue(Skills skill) {
             return switch (skill) {
                 case ACROBATICS -> 0;
@@ -179,6 +76,104 @@ public class PC {
                 case STEALTH -> 16;
                 case SURVIVAL -> 17;
             };
+        }
+    }
+
+    public static class AbilityScores {
+
+        public final PC pcInstance;
+        public int[] abilityScores;
+
+        public AbilityScores(PC pc) {
+            this.abilityScores = new int[6];
+            this.pcInstance = pc;
+        }
+
+        public int[] getAbilityScores() {
+            int[] tmpAbilityScores = abilityScores;
+            for (AbilityScoreIncrease asi : pcInstance.appliedAbilityScoreIncreases) {
+                tmpAbilityScores = asi.adjustScores(tmpAbilityScores);
+            }
+            return tmpAbilityScores;
+        }
+
+        public int getAbilityScore(PC.AbilityScoreEnum ability) {
+            int abilityScore = abilityScores[PC.AbilityScoreEnum.getValue(ability)];
+            for (AbilityScoreIncrease asi : pcInstance.appliedAbilityScoreIncreases) {
+                abilityScore = asi.adjustScore(ability, abilityScore);
+            }
+            return abilityScore;
+        }
+
+        public int[] getAbilityBonuses() {
+            int[] abilityBonuses = new int[6];
+            int[] abilityScores = getAbilityScores();
+            for (int i = 0; i < abilityScores.length; i++) {
+                abilityBonuses[i] = (int) Math.floor(((double) abilityScores[i] - 10) / 2);
+            }
+            for (AbilityBonusIncrease abi : pcInstance.appliedAbilityBonusIncreases) {
+                abilityBonuses = abi.adjustBonuses(abilityBonuses);
+            }
+            return abilityBonuses;
+        }
+
+        public int getAbilityBonus(PC.AbilityScoreEnum ability) {
+            int abilityBonus = getAbilityScore(ability);
+            for (AbilityBonusIncrease bonus : pcInstance.appliedAbilityBonusIncreases) {
+                abilityBonus = bonus.adjustBonus(ability, abilityBonus);
+            }
+            return abilityBonus;
+        }
+    }
+
+    public class SkillProficiencies {
+        private final PC pcInstance;
+        public double[] proficiencies = new double[18];
+
+        public SkillProficiencies(PC pc) {
+            this.pcInstance = pc;
+        }
+
+        public void setProficiencies(double[] proficiencies) {
+            this.proficiencies = proficiencies;
+        }
+
+        public void addProficiency(Skills skill) {
+            if (this.proficiencies[Skills.getArrayValue(skill)] >= 1) {
+                throw new IllegalArgumentException();
+            } else {
+                this.proficiencies[Skills.getArrayValue(skill)] = 1;
+            }
+        }
+
+        public void addExpertise(Skills skill) {
+            if (this.proficiencies[Skills.getArrayValue(skill)] >= 2) {
+                throw new IllegalStateException();
+            } else {
+                this.proficiencies[Skills.getArrayValue(skill)] = 2;
+            }
+        }
+
+        public void addJackOfAllTrades() {
+            for (double i : this.proficiencies) {
+                if (i == 0) {
+                    i = 0.5;
+                }
+            }
+        }
+
+        public void removeJackOfAllTrades() {
+            for (double i : this.proficiencies) {
+                if (i == 0.5) {
+                    i = 0;
+                }
+            }
+        }
+
+        public int getSkillBonus(Skills skill) {
+            double abilityScore = PC.this.abilityScores.getAbilityScore(Skills.getAbility(skill));
+            double proficiencyScore = this.proficiencies[Skills.getArrayValue(skill)] * PC.this.getProficiencyBonus();
+            return (int) Math.round(abilityScore + proficiencyScore); //TODO: figure out if its rounded up or down
         }
     }
 }

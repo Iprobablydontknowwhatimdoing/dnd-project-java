@@ -1,12 +1,12 @@
 public class AbilityScoreIncrease {
     int[] scores;
-    private final PC pc;
-    public AbilityScoreIncrease(int[] scores, PC pc) {
+    private final PC pcInstance;
+    public AbilityScoreIncrease(int[] scores, PC pcInstance) {
         //  TODO: fix this, intellisence doesn't like it.
         assert PC.AbilityScoreEnum.values().length == scores.length;
         this.scores = scores;
-        this.pc = pc;
-        pc.appliedAbilityScoreIncreases.add(this);
+        this.pcInstance = pcInstance;
+        pcInstance.appliedAbilityScoreIncreases.add(this);
     }
     public final int[] adjustScores() {
         return this.scores;
