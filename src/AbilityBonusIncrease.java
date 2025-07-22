@@ -4,7 +4,6 @@ public class AbilityBonusIncrease {
     private final PC pc;
 
     public AbilityBonusIncrease(int[] bonuses, PC pc) {
-        //  TODO: fix this, intellisence doesn't like it.
         //  try { assert Attributes.AbilityBonuses.values().length == bonuses.length;} catch (AssertionError e) {System.out.println( 'Whoops! you encountered error ' + e + '\n\n Please fix this!');}
         this.bonuses = bonuses;
         this.pc = pc;
@@ -15,7 +14,7 @@ public class AbilityBonusIncrease {
         return this.bonuses;
     }
 
-    public int[] getBonuses(int[] existingBonuses) {
+    public int[] adjustBonuses(int[] existingBonuses) {
         try {
             assert existingBonuses.length == this.bonuses.length;
         } catch (AssertionError e) {
@@ -27,5 +26,8 @@ public class AbilityBonusIncrease {
         }
 
         return existingBonuses;
+    }
+    public int adjustBonus(PC.AbilityScoreEnum ability, int currentAbilityBonus) {
+        return currentAbilityBonus += this.bonuses[PC.AbilityScoreEnum.getValue(ability)];
     }
 }

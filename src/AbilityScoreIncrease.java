@@ -24,4 +24,7 @@ public class AbilityScoreIncrease {
 
         return existingScores;
     }
+    public int adjustScore(PC.AbilityScoreEnum ability, int currentAbilityScore) {
+        return currentAbilityScore += this.scores[PC.AbilityScoreEnum.getValue(ability)];
+    }
 }

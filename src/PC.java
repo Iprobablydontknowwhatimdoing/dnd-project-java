@@ -7,9 +7,11 @@ public class PC {
     public List<Class> appliedClasses = new ArrayList<>();
 
     protected AbilityScores abilityScores;
+    protected SkillProficiencies skillProficiencies;
 
     public PC() {
         this.abilityScores = new AbilityScores(this);
+        this.skillProficiencies = new SkillProficiencies(this);
     }
     public int getTotalLevel() {
         int level = 0;
@@ -43,32 +45,55 @@ public class PC {
         }
     }
 
-    public class AbilityScores {
+    public static class AbilityScores {
 
         public int[] abilityScores;
+        public final PC pcInstance;
 
         public AbilityScores(PC pc) {
             this.abilityScores = new int[6];
+            this.pcInstance = pc;
         }
         public int[] getAbilityScores() {
             int[] tmpAbilityScores = abilityScores;
-            for (AbilityScoreIncrease asi : PC.this.appliedAbilityScoreIncreases) {
+            for (AbilityScoreIncrease asi : pcInstance.appliedAbilityScoreIncreases) {
                 tmpAbilityScores = asi.adjustScores(tmpAbilityScores);
             }
             return tmpAbilityScores;
         }
         public int getAbilityScore(PC.AbilityScoreEnum ability) {
-            int[] tmpAbilityScores = abilityScores;
-            for (AbilityScoreIncrease asi : PC.this.appliedAbilityScoreIncreases) {
-                tmpAbilityScores = asi.adjustScores(tmpAbilityScores);
+            int abilityScore = abilityScores[PC.AbilityScoreEnum.getValue(ability)];
+            for (AbilityScoreIncrease asi : pcInstance.appliedAbilityScoreIncreases) {
+                abilityScore = asi.adjustScore(ability, abilityScore);
             }
-            return tmpAbilityScores[PC.AbilityScoreEnum.getValue(ability)];
+            return abilityScore;
+        }
+        public int[] getAbilityBonuses() {
+            int[] abilityBonuses = new int[6];
+            int[] abilityScores = getAbilityScores();
+            for (int i = 0; i < abilityScores.length; i++) {
+                abilityBonuses[i] = (int) Math.floor(((double) abilityScores[i] - 10) / 2);
+            }
+            for (AbilityBonusIncrease abi: pcInstance.appliedAbilityBonusIncreases) {
+                abilityBonuses = abi.adjustBonuses(abilityBonuses);
+            }
+            return abilityBonuses;
+        }
+        public int getAbilityBonus(PC.AbilityScoreEnum ability) {
+            int abilityBonus = getAbilityScore(ability);
+            for (AbilityBonusIncrease bonus : pcInstance.appliedAbilityBonusIncreases) {
+                abilityBonus = bonus.adjustBonus(ability, abilityBonus);
+            }
+            return abilityBonus;
         }
     }
-    public class skillProficiencies {
+    public class SkillProficiencies {
         public double[] proficiencies = new double[18];
+        private final PC pcInstance;
 
-        public skillProficiencies() {}
+        public SkillProficiencies(PC pc) {
+            this.pcInstance = pc;
+        }
         public void setProficiencies(double[] proficiencies) {
             this.proficiencies = proficiencies;
         }
