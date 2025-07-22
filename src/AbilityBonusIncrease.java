@@ -28,6 +28,6 @@ public class AbilityBonusIncrease {
         return existingBonuses;
     }
     public int adjustBonus(PC.AbilityScoreEnum ability, int currentAbilityBonus) {
-        return currentAbilityBonus += this.bonuses[PC.AbilityScoreEnum.getValue(ability)];
+        return currentAbilityBonus += this.bonuses[ability.index];
     }
 }

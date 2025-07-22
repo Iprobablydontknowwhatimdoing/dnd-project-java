@@ -28,17 +28,16 @@ public class PC {
     }
 
     public enum AbilityScoreEnum {
-        STRENGTH, DEXTERITY, CONSTITUTION, INTELLIGENCE, WISDOM, CHARISMA;
+        STRENGTH(0),
+        DEXTERITY(1),
+        CONSTITUTION(2),
+        INTELLIGENCE(3),
+        WISDOM(4),
+        CHARISMA(5);
 
-        public static int getValue(AbilityScoreEnum abilityScore) {
-            return switch (abilityScore) {
-                case STRENGTH -> 0;
-                case DEXTERITY -> 1;
-                case CONSTITUTION -> 2;
-                case INTELLIGENCE -> 3;
-                case WISDOM -> 4;
-                case CHARISMA -> 5;
-            };
+        public final int index;
+        AbilityScoreEnum(int i) {
+            this.index = i;
         }
     }
 
@@ -102,7 +101,7 @@ public class PC {
         }
 
         public int getAbilityScore(AbilityScoreEnum ability) {
-            int abilityScore = abilityScores[AbilityScoreEnum.getValue(ability)];
+            int abilityScore = abilityScores[ability.index];
             for (AbilityScoreIncrease asi : pcInstance.appliedAbilityScoreIncreases) {
                 abilityScore = asi.adjustScore(ability, abilityScore);
             }
@@ -175,7 +174,7 @@ public class PC {
         }
 
         public int getSkillBonus(Skills skill) {
-            double abilityScore = pcInstance.abilityScores.getAbilityScore(Skills.getAbility(skill));
+            double abilityScore = pcInstance.abilityScores.getAbilityScore(skill.ability);
             double proficiencyScore = this.proficiencies[skill.value] * pcInstance.getProficiencyBonus();
             return (int) Math.round(abilityScore + proficiencyScore); //TODO: figure out if its rounded up or down
         }
