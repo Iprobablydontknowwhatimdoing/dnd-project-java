@@ -36,5 +36,5 @@ public void main() throws IOException {
         pc.skillProficiencies.addProficiency(choice);
     }
     System.out.println(Arrays.toString(pc.skillProficiencies.getSkillBonuses()));
-
 }
+

@@ -5,24 +5,36 @@ import java.util.Scanner;
 public class PC {
 
     public List<Class> classOptions = new ArrayList<>();
+    public List<Class> appliedClasses = new ArrayList<>();
     public List<Race> raceOptions = new ArrayList<>();
-
+    public Race appliedRace;
     public List<AbilityScoreIncrease> appliedAbilityScoreIncreases = new ArrayList<>();
     public List<AbilityBonusIncrease> appliedAbilityBonusIncreases = new ArrayList<>();
-    public List<Class> appliedClasses = new ArrayList<>();
-    public Race appliedRace;
-
+    public String name;
+    public List<Weapon> weaponProficiencies;
     public AbilityScores abilityScores;
     public SkillProficiencies skillProficiencies;
 
     public PC() {
         this.abilityScores = new AbilityScores(this);
         this.skillProficiencies = new SkillProficiencies(this);
+        this.appliedRace = askRace();    //TODO: figure out how to find all subclasses of race for this list
     }
 
-    public void askRaceOption() {
-        System.out.println("Please choose a race:");
+    public Race askRace() {
+        switch (choice(new String[]{"Hobgoblin"})) {
+            case 0 -> {return new Race(this)} //TODO: need to change to hobgoblin rather than race before commit
+            default -> {System.out.println("Invalid choice, try again! \n");return askRace();}
+        }
+    }
 
+    public static int choice(String[] choices) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please choose one of the following:");
+        for (int i = 0; i < choices.length; i++) {
+            System.out.println(((char) i + 'a') + ". " + choices[i]);
+        }
+        return (int) scan.nextLine().charAt(0) - 'a';
     }
 
     public int getTotalLevel() {
@@ -91,6 +103,84 @@ public class PC {
         }
     }
 
+    public enum Speeds {
+        WALKING(0),
+        WALKING_ENCUMBERED(1),
+        CLIMBING(2),
+        CLIMBING_ENCUMBERED(3),
+        FLYING(4),
+        FLYING_ENCUMBERED(5),
+        SWIMMING(6),
+        SWIMMING_ENCUMBERED(7),
+        BURROWING(8),
+        BURROWING_ENCUMBERED(9);
+
+        public final int arrayValue;
+        Speeds(int array) {
+            this.arrayValue = array;
+        }
+    }
+
+    public enum Sizes {
+        TINY(0),
+        SMALL(1),
+        MEDIUM(2),
+        LARGE(3),
+        GIANT(4),
+        GARGANTUAN(5);
+
+        public final int arrayValue;
+
+        Sizes(int array) {
+            this.arrayValue = array;
+        }
+    }
+
+    public enum DamageTypes {
+        ACID(0),
+        BLUDGEONING(1),
+        COLD(2),
+        FIRE(3),
+        FORCE(4),
+        LIGHTNING(5),
+        NECROTIC(6),
+        PIERCING(7),
+        POISON(8),
+        PSYCHIC(9),
+        RADIANT(10),
+        SLASHING(11),
+        THUNDER(12),
+        BLUEBERRY(13);
+
+        public final int arrayValue;
+
+        DamageTypes(int array) {
+            this.arrayValue = array;
+        }
+    }
+
+    public enum DiceRollTypes {
+        ADVANTAGE(1),
+        FLAT(0),
+        DISADVANTAGE(-1);
+
+        public final int id;
+        DiceRollTypes(int id) {
+            this.id = id;
+        }
+    }
+
+    public enum ArmorTypes {
+        LIGHT(0),
+        MEDIUM(1),
+        HEAVY(2),
+        SHIELDS(3);
+
+        public final int arrayValue;
+        ArmorTypes(int index) {
+            this.arrayValue = index;
+        }
+    }
 
     public static class AbilityScores {
 
@@ -108,23 +198,6 @@ public class PC {
                 tmpAbilityScores = asi.adjustScores(tmpAbilityScores);
             }
             return tmpAbilityScores;
-        }
-        public void askAbilityScoreIncrease(String abilityScoreIncreaseText, ) {
-            System.out.println("Please choose an ability score increase:");
-            System.out.println(abilityScoreIncreaseText);
-            Scanner answerScanner = new Scanner(System.in);
-            System.out.println("Choice (character): ");
-            char choice = answerScanner.nextLine().charAt(0);
-            switch (choice) {
-                case 'a' -> {
-                    System.out.println("Please choose your +2 ability score bonus");
-                } case 'b' -> {
-                    System.out.println("Please choose your +1 ability score bonus");
-                } default -> {
-                    System.out.println("Sorry, this is an invalid answer. Please try again. \n\n\n");
-                    askAbilityScoreIncrease();
-                }
-            }
         }
 
         public int getAbilityScore(AbilityScoreEnum ability) {
