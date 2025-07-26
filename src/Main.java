@@ -1,3 +1,6 @@
+import Enums.AbilityScores;
+import Enums.Skills;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,14 +12,14 @@ public PC pc;
 
 public void main() throws IOException {
     this.pc = new PC();
-    pc.appliedClasses.add(new Class(pc));
+    pc.appliedClasses.add(new Class(1,this.pc));
     System.out.println("Welcome to test. Please enter a ");
     BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
     String s = r.readLine();
     System.out.println(s);
     System.out.println("\n\n");
     int[] aScoreImp = new int[6];
-    for (PC.AbilityScoreEnum ability : PC.AbilityScoreEnum.values()) {
+    for (AbilityScores ability : AbilityScores.values()) {
         System.out.println(ability);
         aScoreImp[ability.index] = Integer.parseInt(r.readLine());
         System.out.println(aScoreImp[ability.index]);
@@ -28,11 +31,11 @@ public void main() throws IOException {
     Scanner scanner = new Scanner(System.in);
     String input = scanner.nextLine();
     String[] selectedString = input.split(",");
-    List<PC.Skills> selectedEnum = new java.util.ArrayList<>(List.of());
+    List<Skills> selectedEnum = new java.util.ArrayList<>(List.of());
     for (String str : selectedString) {
-        selectedEnum.add(PC.Skills.valueOf(str));
+        selectedEnum.add(Skills.valueOf(str));
     }
-    for (PC.Skills choice : selectedEnum) {
+    for (Skills choice : selectedEnum) {
         pc.skillProficiencies.addProficiency(choice);
     }
     System.out.println(Arrays.toString(pc.skillProficiencies.getSkillBonuses()));

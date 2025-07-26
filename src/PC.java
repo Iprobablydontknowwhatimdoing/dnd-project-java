@@ -1,3 +1,5 @@
+import Enums.Skills;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,8 +14,10 @@ public class PC {
     public List<AbilityBonusIncrease> appliedAbilityBonusIncreases = new ArrayList<>();
     public String name;
     public List<Weapon> weaponProficiencies;
+    public boolean[][] armorProficiencies = new boolean[20][4];
     public AbilityScores abilityScores;
     public SkillProficiencies skillProficiencies;
+    public List<Action> enabledActions = new ArrayList<>();
 
     public PC() {
         this.abilityScores = new AbilityScores(this);
@@ -22,9 +26,7 @@ public class PC {
     }
 
     public Race askRace() {
-        switch (choice(new String[]{"Hobgoblin"})) {
-            case 0 -> {return new Race(this)} //TODO: need to change to hobgoblin rather than race before commit
-            default -> {System.out.println("Invalid choice, try again! \n");return askRace();}
+        for (Race raceOption : raceOptions) {
         }
     }
 
@@ -49,139 +51,6 @@ public class PC {
         return (int) Math.ceil((double) getTotalLevel() / 2);
     }
 
-    public enum AbilityScoreEnum {
-        STRENGTH(0),
-        DEXTERITY(1),
-        CONSTITUTION(2),
-        INTELLIGENCE(3),
-        WISDOM(4),
-        CHARISMA(5);
-
-        public final int index;
-        AbilityScoreEnum(int i) {
-            this.index = i;
-        }
-    }
-
-    public enum Skills {
-        ACROBATICS(0, AbilityScoreEnum.DEXTERITY),
-        ANIMAL_HANDLING(1, AbilityScoreEnum.WISDOM),
-        ARCANA(2, AbilityScoreEnum.INTELLIGENCE),
-        ATHLETICS(3, AbilityScoreEnum.STRENGTH),
-        DECEPTION(4, AbilityScoreEnum.CHARISMA),
-        HISTORY(5, AbilityScoreEnum.INTELLIGENCE),
-        INSIGHT(6, AbilityScoreEnum.WISDOM),
-        INTIMIDATION(7, AbilityScoreEnum.CHARISMA),
-        INVESTIGATION(8, AbilityScoreEnum.INTELLIGENCE),
-        MEDICINE(9, AbilityScoreEnum.WISDOM),
-        NATURE(10, AbilityScoreEnum.INTELLIGENCE),
-        PERCEPTION(11, AbilityScoreEnum.WISDOM),
-        PERFORMANCE(12, AbilityScoreEnum.CHARISMA),
-        PERSUASION(13, AbilityScoreEnum.CHARISMA),
-        RELIGION(14, AbilityScoreEnum.INTELLIGENCE),
-        SLIGHT_OF_HAND(15, AbilityScoreEnum.DEXTERITY),
-        STEALTH(16, AbilityScoreEnum.DEXTERITY),
-        SURVIVAL(17, AbilityScoreEnum.WISDOM);
-
-        public final AbilityScoreEnum ability;
-        public final int value;
-
-         Skills(int value, AbilityScoreEnum abilityScore) {
-            this.ability = abilityScore;
-            this.value = value;
-
-        }
-
-        public static AbilityScoreEnum getAbility(Skills skill) {
-            return switch (skill) {
-                case ATHLETICS -> AbilityScoreEnum.STRENGTH;
-                case ACROBATICS, SLIGHT_OF_HAND, STEALTH -> AbilityScoreEnum.DEXTERITY;
-                case ARCANA, HISTORY, INVESTIGATION, NATURE, RELIGION -> AbilityScoreEnum.INTELLIGENCE;
-                case ANIMAL_HANDLING, INSIGHT, MEDICINE, PERCEPTION, SURVIVAL -> AbilityScoreEnum.WISDOM;
-                case DECEPTION, INTIMIDATION, PERFORMANCE, PERSUASION -> AbilityScoreEnum.CHARISMA;
-            };
-        }
-    }
-
-    public enum Speeds {
-        WALKING(0),
-        WALKING_ENCUMBERED(1),
-        CLIMBING(2),
-        CLIMBING_ENCUMBERED(3),
-        FLYING(4),
-        FLYING_ENCUMBERED(5),
-        SWIMMING(6),
-        SWIMMING_ENCUMBERED(7),
-        BURROWING(8),
-        BURROWING_ENCUMBERED(9);
-
-        public final int arrayValue;
-        Speeds(int array) {
-            this.arrayValue = array;
-        }
-    }
-
-    public enum Sizes {
-        TINY(0),
-        SMALL(1),
-        MEDIUM(2),
-        LARGE(3),
-        GIANT(4),
-        GARGANTUAN(5);
-
-        public final int arrayValue;
-
-        Sizes(int array) {
-            this.arrayValue = array;
-        }
-    }
-
-    public enum DamageTypes {
-        ACID(0),
-        BLUDGEONING(1),
-        COLD(2),
-        FIRE(3),
-        FORCE(4),
-        LIGHTNING(5),
-        NECROTIC(6),
-        PIERCING(7),
-        POISON(8),
-        PSYCHIC(9),
-        RADIANT(10),
-        SLASHING(11),
-        THUNDER(12),
-        BLUEBERRY(13);
-
-        public final int arrayValue;
-
-        DamageTypes(int array) {
-            this.arrayValue = array;
-        }
-    }
-
-    public enum DiceRollTypes {
-        ADVANTAGE(1),
-        FLAT(0),
-        DISADVANTAGE(-1);
-
-        public final int id;
-        DiceRollTypes(int id) {
-            this.id = id;
-        }
-    }
-
-    public enum ArmorTypes {
-        LIGHT(0),
-        MEDIUM(1),
-        HEAVY(2),
-        SHIELDS(3);
-
-        public final int arrayValue;
-        ArmorTypes(int index) {
-            this.arrayValue = index;
-        }
-    }
-
     public static class AbilityScores {
 
         public final PC pcInstance;
@@ -200,7 +69,7 @@ public class PC {
             return tmpAbilityScores;
         }
 
-        public int getAbilityScore(AbilityScoreEnum ability) {
+        public int getAbilityScore(AbilityScores ability) {
             int abilityScore = abilityScores[ability.index];
             for (AbilityScoreIncrease asi : pcInstance.appliedAbilityScoreIncreases) {
                 abilityScore = asi.adjustScore(ability, abilityScore);
@@ -220,7 +89,7 @@ public class PC {
             return abilityBonuses;
         }
 
-        public int getAbilityBonus(AbilityScoreEnum ability) {
+        public int getAbilityBonus(AbilityScores ability) {
             int abilityBonus = getAbilityScore(ability);
             for (AbilityBonusIncrease bonus : pcInstance.appliedAbilityBonusIncreases) {
                 abilityBonus = bonus.adjustBonus(ability, abilityBonus);

@@ -1,3 +1,5 @@
+import Enums.AbilityScores;
+
 public class AbilityBonusIncrease {
 
     int[] bonuses;
@@ -27,7 +29,7 @@ public class AbilityBonusIncrease {
 
         return existingBonuses;
     }
-    public int adjustBonus(PC.AbilityScoreEnum ability, int currentAbilityBonus) {
+    public int adjustBonus(AbilityScores ability, int currentAbilityBonus) {
         return currentAbilityBonus += this.bonuses[ability.index];
     }
 }

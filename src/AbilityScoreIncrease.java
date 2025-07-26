@@ -1,9 +1,11 @@
+import Enums.AbilityScores;
+
 public class AbilityScoreIncrease {
     int[] scores;
     private final PC pcInstance;
     public AbilityScoreIncrease(int[] scores, PC pcInstance) {
         //  TODO: fix this, intellisence doesn't like it.
-        assert PC.AbilityScoreEnum.values().length == scores.length;
+        assert AbilityScores.values().length == scores.length;
         this.scores = scores;
         this.pcInstance = pcInstance;
         pcInstance.appliedAbilityScoreIncreases.add(this);
@@ -24,7 +26,7 @@ public class AbilityScoreIncrease {
 
         return existingScores;
     }
-    public int adjustScore(PC.AbilityScoreEnum ability, int currentAbilityScore) {
+    public int adjustScore(AbilityScores ability, int currentAbilityScore) {
         return currentAbilityScore += this.scores[ability.index];
     }
 }

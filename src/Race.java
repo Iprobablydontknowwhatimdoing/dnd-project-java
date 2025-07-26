@@ -1,10 +1,15 @@
+import Enums.AbilityScores;
+import Enums.DiceRollTypes;
+
 public class Race {
 
-    public int size;    //tiny:0, small:1, medium:2, large:3, huge:4, gargantuan:5
-    public int[] speeds = new int[10];
-    public int[] damageMultiplier = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-    public int[] saves;
-    public int[] armorProficiencies;
+    public int[] size = new int[20];    //tiny:1, small:2, medium:3, large:4, huge:5, gargantuan:6. 0: Undefined
+    public int[][] speeds = new int[20][10]; //First array is for level, second is for speeds
+    public boolean[] speedsOverride; //Per Level
+    public int[][] damageMultiplier = new int[][]{{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+    public int[][] saves; // first is level, second is the  +modifier
+    public DiceRollTypes[][] savesRollType = new DiceRollTypes[20][6]; // first is level, second is for each roll (in ability score order)
+    public boolean[][] armorProficiencies = new boolean[20][4]; // first is level, second is for light, medium, heavy armor, and shield proficiencies
     public final int abilitySavingThrows = -1;
 
     public final PC pc;
@@ -12,10 +17,11 @@ public class Race {
     public Race(PC pc) {
         this.pc = pc;
     }
+
     public AbilityBonusIncrease setAbilityBonusIncrease() {
         String[] possibleAbilityScores = new String[6];
         int i = 0;
-        for (PC.AbilityScoreEnum ability : PC.AbilityScoreEnum.values()) {
+        for (AbilityScores ability : AbilityScores.values()) {
             possibleAbilityScores[i] = ability.toString();
             i++;
         }
