@@ -1,35 +1,44 @@
-import Enums.Skills;
+import Enums.*;
 
+import java.lang.reflect.Method;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class PC {
 
-    public List<Class> classOptions = new ArrayList<>();
+    public String name;
+    public String height;
+    public String weight;
+    public String gender;
+    public String hairColor;
+    public String eyeColor;
+    public String skin;
+    public String age;
+    public String faith;
+    public Alignments alignment;
+    public boolean inspiration = false;
+
+    public static List<Class> classOptions = new ArrayList<>();
     public List<Class> appliedClasses = new ArrayList<>();
-    public List<Race> raceOptions = new ArrayList<>();
+    public static List<Race> raceOptions = new ArrayList<>();
     public Race appliedRace;
     public List<AbilityScoreIncrease> appliedAbilityScoreIncreases = new ArrayList<>();
     public List<AbilityBonusIncrease> appliedAbilityBonusIncreases = new ArrayList<>();
-    public String name;
     public List<Weapon> weaponProficiencies;
     public boolean[][] armorProficiencies = new boolean[20][4];
     public AbilityScores abilityScores;
     public SkillProficiencies skillProficiencies;
     public List<Action> enabledActions = new ArrayList<>();
+    public List<Runnable> innitiativeModifiers = new ArrayList<Runnable>();
 
     public PC() {
         this.abilityScores = new AbilityScores(this);
         this.skillProficiencies = new SkillProficiencies(this);
-        this.appliedRace = askRace();    //TODO: figure out how to find all subclasses of race for this list
+        this.innitiativeModifiers.add(() -> {this.abilityScores.getAbilityScore(Enums.AbilityScores.DEXTERITY);}); //TODO: ask daddy if this will work
+        // this.appliedRace = askRace();    //TODO: figure out how to find all subclasses of race for this list
     }
-
-    public Race askRace() {
-        for (Race raceOption : raceOptions) {
-        }
-    }
-
     public static int choice(String[] choices) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please choose one of the following:");
@@ -69,7 +78,7 @@ public class PC {
             return tmpAbilityScores;
         }
 
-        public int getAbilityScore(AbilityScores ability) {
+        public int getAbilityScore(Enums.AbilityScores ability) {
             int abilityScore = abilityScores[ability.index];
             for (AbilityScoreIncrease asi : pcInstance.appliedAbilityScoreIncreases) {
                 abilityScore = asi.adjustScore(ability, abilityScore);
@@ -89,7 +98,7 @@ public class PC {
             return abilityBonuses;
         }
 
-        public int getAbilityBonus(AbilityScores ability) {
+        public int getAbilityBonus(Enums.AbilityScores ability) {
             int abilityBonus = getAbilityScore(ability);
             for (AbilityBonusIncrease bonus : pcInstance.appliedAbilityBonusIncreases) {
                 abilityBonus = bonus.adjustBonus(ability, abilityBonus);

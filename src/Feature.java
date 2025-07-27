@@ -8,5 +8,6 @@ public class Feature {
         this.name = name;
         this.action = action;
         this.pc = pc;
+        pc.enabledActions.add(action);
     }
 }
