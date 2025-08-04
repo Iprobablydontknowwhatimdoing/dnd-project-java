@@ -1,8 +1,12 @@
 import java.io.IOException;
+import java.util.Scanner;
 
-public PC pc;
-
-public void main() throws IOException {
-    PC pc = new PC();
+public class Main {
+    public static PC pc;
+    public static void main(String[] args) {
+        Main mainInstance = new Main();
+        new PC(new CLI());
+    }
 }
+
 

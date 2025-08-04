@@ -1,49 +1,35 @@
-import Enums.AbilityScores;
-import Enums.DiceRollTypes;
+import Enums.DiceRollType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 public class Race {
+//TODO: figure out how to make a race that is functionally the same race but has overrides (see racesublist in mpmb)
+    public String name;
+    public String source; // should be something like 'PHB2014 43'(book, page number)
+    public String ageDescription;
+    public String heightDescription;
+    public String weightDescription;
 
-    public int[] size = new int[20];    //tiny:1, small:2, medium:3, large:4, huge:5, gargantuan:6. 0: Undefined
-    public int[][] speeds = new int[20][10]; //First array is for level, second is for speeds
-    public boolean[] speedsOverride; //Per Level
-    public int[][] damageMultiplier = new int[][]{{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
-    public int[][] saves; // first is level, second is the  +modifier
-    public DiceRollTypes[][] savesRollType = new DiceRollTypes[20][6]; // first is level, second is for each roll (in ability score order)
+    public List<Weapon> weaponProficiencies;
+    public List<String> languages;
+    public boolean[] weaponTypeProficiencies; // should be
+    public byte size = 0;    //tiny:1, small:2, medium:3, large:4, huge:5, gargantuan:6. 0: Undefined, could also be a choice //TODO: help how to get it also a choice
+    public Callable<Integer>[][] speeds = new Callable[20][10]; //First array is for level, second is for speeds // should be in form of callable, sometimes needed for stuff like if heavy armor, add 10 to encumberance speed
+    public boolean[] speedsOverride = new boolean[20]; //Per Level speed override
+    public float[][] damageMultiplier = new float[20][14]; // first is level, second is for each type of damage
+    public int[][] saves = new int[20][6]; // first is level, second is the  +modifier
+    public String[] savesText = new String[20]; // by level saves text
+    public DiceRollType[][] savesRollType = new DiceRollType[20][6]; // first is level, second is for each roll (in ability score order)
     public boolean[][] armorProficiencies = new boolean[20][4]; // first is level, second is for light, medium, heavy armor, and shield proficiencies
     public final int abilitySavingThrows = -1;
-
     public final PC pc;
-    public AbilityScoreIncrease abilityScoreIncrease;
+    public int[] abilityScoreIncrease = new int[6];
+    public List<Feature> traits = new ArrayList<>();
+    public SpellCastingList raceBonusSpellList; //TODO: set to default spellcastinglist with no spells
     public Race(PC pc) {
         this.pc = pc;
     }
 
-    public AbilityBonusIncrease setAbilityBonusIncrease() {
-        String[] possibleAbilityScores = new String[6];
-        int i = 0;
-        for (AbilityScores ability : AbilityScores.values()) {
-            possibleAbilityScores[i] = ability.toString();
-            i++;
-        }
-        i = 0;
-        int choice = PC.choice(new String[]{"Add +2 to one score and +1 to another", "Add +1 to three scores"});
-        int[] abilityBonusIncreaseValues = new int[6];
-        System.out.println("DEBUG your choice was: " + String.valueOf(choice));
-        switch (choice) {
-            case 0 -> {
-                System.out.println("Please choose which ability score you want to be +2");
-                abilityBonusIncreaseValues[PC.choice(possibleAbilityScores)] = 2;
-                System.out.println("Please choose which ability score you want to be +1");
-                abilityBonusIncreaseValues[PC.choice(possibleAbilityScores)] = 1;
-            } case 1 -> {
-                System.out.println("Please choose the first ability you would like to be +1");
-                abilityBonusIncreaseValues[PC.choice(possibleAbilityScores)] = 1;
-                System.out.println("Please choose the second ability you would like to be +1");
-                abilityBonusIncreaseValues[PC.choice(possibleAbilityScores)] = 1;
-                System.out.println("Please choose the third ability you would like to be +1");
-                abilityBonusIncreaseValues[PC.choice(possibleAbilityScores)] = 1;
-            }
-        }
-        return new AbilityBonusIncrease(abilityBonusIncreaseValues, pc);
-    }
 }

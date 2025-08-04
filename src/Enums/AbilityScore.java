@@ -1,6 +1,6 @@
 package Enums;
 
-public enum AbilityScores {
+public enum AbilityScore {
     STRENGTH(0),
     DEXTERITY(1),
     CONSTITUTION(2),
@@ -9,8 +9,7 @@ public enum AbilityScores {
     CHARISMA(5);
 
     public final int index;
-    AbilityScoreEnum(int i) {
-        this.index = i;
+    AbilityScore(int index) {
+        this.index = index;
     }
-
 }

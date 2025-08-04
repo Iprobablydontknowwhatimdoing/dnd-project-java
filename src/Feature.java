@@ -1,13 +1,10 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Feature {
     public String name;
-    public Action action;
-    public PC pc;
-    protected Object self;
-
-    public Feature(String name, Action action, PC pc) {
-        this.name = name;
-        this.action = action;
-        this.pc = pc;
-        pc.enabledActions.add(action);
-    }
+    public String description;
+    public int level;
+    public List<Recovery> recoveries;
+    public List<Action> enabledActions = new ArrayList<>();
 }

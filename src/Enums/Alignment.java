@@ -1,6 +1,6 @@
 package Enums;
 
-public enum Alignments {
+public enum Alignment {
     LAWFUL_GOOD(0),
     LAWFUL_NEUTRAL(1),
     LAWFUL_EVIL(2),
@@ -12,7 +12,7 @@ public enum Alignments {
     CHAOTIC_EVIL(8);
 
     public final int arrayValue;
-    Alignments(int i) {
+    Alignment(int i) {
         this.arrayValue = i;
     }
 }

@@ -1,12 +1,12 @@
 package Enums;
 
-public enum DiceRollTypes {
+public enum DiceRollType {
     ADVANTAGE(1),
     FLAT(0),
     DISADVANTAGE(-1);
 
     public final int id;
-    DiceRollTypes(int id) {
+    DiceRollType(int id) {
         this.id = id;
     }
 }

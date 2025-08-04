@@ -1,6 +1,6 @@
 package Enums;
 
-public enum DamageTypes {
+public enum DamageType {
     ACID(0),
     BLUDGEONING(1),
     COLD(2),
@@ -18,7 +18,7 @@ public enum DamageTypes {
 
     public final int arrayValue;
 
-    DamageTypes(int array) {
+    DamageType(int array) {
         this.arrayValue = array;
     }
 }
